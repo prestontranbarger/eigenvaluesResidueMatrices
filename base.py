@@ -44,7 +44,7 @@ def legendreSymbol(a, p):
 def jacobiSymbol(a, n):
     if n == 1:
         return [1, True]
-    if n % 2 == 0:
+    if n % 2 == 0 or n < 0:
         return [0, False]
     if math.gcd(a, n) != 1:
         return [0, True]
@@ -52,17 +52,17 @@ def jacobiSymbol(a, n):
         prod = 1
         if a < 0:
             a = -1 * a
-            if(n % 4 == 3):
+            if n % 4 == 3:
                 prod *= -1
         while a > 1:
             if a > n:
                 a = a % n
             m = (-1 if (n % 8 == 3 or n % 8 == 5) else 1)
-            while(not (a % 2)):
+            while not a % 2:
                 a = a // 2
                 prod *= m
-            if(a > 2):
-                if(((a - 1) * (n - 1) / 4) % 2):
+            if a > 2:
+                if (a - 1) * (n - 1) / 4 % 2:
                     prod *= -1
                 t = a
                 a = n
