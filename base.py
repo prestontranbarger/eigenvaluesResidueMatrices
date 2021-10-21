@@ -14,6 +14,12 @@ def factorEisenstein(alpha):
     #input can be list or eisenstien integer
     return factor(Integer(alpha[0]) + Integer(alpha[1]) * omega)
 
+def eisensteinMod(alpha, n):
+    z = alpha / n
+    kappa = round(z[0]) + round(z[1]) * omega
+    rho = alpha - kappa * n
+    return rho
+
 def isPrime(f):
     #uses a given factorization to determine if a number is prime in a specific field
     if len(f) == 1 and f[0][1] == 1:
@@ -21,9 +27,33 @@ def isPrime(f):
     return False
 
 def isPrimary(alpha):
-    if alpha[0] % 3 == 2 and alpha[1] % 3 == 0:
+    if alpha[0] % 3 == 1 and alpha[1] % 3 == 0:
         return True
     return False
+
+def makePrimary(alpha):
+    i, j = 0, 0
+    alphaCopy = alpha
+    while not (alphaCopy[0] % 3 == 1 and alphaCopy[1] % 3 == 0):
+        a, b = Integer(alphaCopy[0]), Integer(alphaCopy[1])
+        if (a + b) % 3:
+            if a % 3 == 0:
+                i += (4 if b % 3 == 1 else 1)
+            elif a % 3 == 2:
+                i += (3 if b % 3 == 0 else 2)
+            else:
+                i += 5
+        else:
+            if a % 3 == 0:
+                i, j = i + 5, j + 2
+            elif a % 3 == 1:
+                m, n = (a - 1) // 3, (b - 2) // 3
+                i, j = i + (4 + 4 * (m + n)) % 6, j + 1
+            else:
+                m, n = (a - 2) // 3, (b - 1) // 3
+                i, j = i + (5 + 2 * (m + n)) % 6, j + 1
+        alphaCopy = alpha / ((-1 * omega) ** i * (1 - omega) ** j)
+    return [i % 6, j, alphaCopy]
 
 def isNthPowerFree(f, n):
     #pass n=2 to find squarefree, n=3 to find cubefree, etc
@@ -32,7 +62,7 @@ def isNthPowerFree(f, n):
             return False
     return True
 
-def legendreSymbol(a, p):
+def legendreSymbolSlow(a, p):
     if p == 2:
         return [0, False]
     else:
@@ -40,34 +70,6 @@ def legendreSymbol(a, p):
         if out == p - 1:
             out = -1
         return [out, True]
-
-def jacobiSymbol(a, n):
-    if n == 1:
-        return [1, True]
-    if n % 2 == 0 or n < 0:
-        return [0, False]
-    if math.gcd(a, n) != 1:
-        return [0, True]
-    else:
-        prod = 1
-        if a < 0:
-            a = -1 * a
-            if n % 4 == 3:
-                prod *= -1
-        while a > 1:
-            if a > n:
-                a = a % n
-            m = (-1 if (n % 8 == 3 or n % 8 == 5) else 1)
-            while not a % 2:
-                a = a // 2
-                prod *= m
-            if a > 2:
-                if (a - 1) * (n - 1) / 4 % 2:
-                    prod *= -1
-                t = a
-                a = n
-                n = t
-        return [prod, True]
 
 def jacobiSymbolSlow(a, n):
     f = factor(n)
@@ -80,7 +82,32 @@ def jacobiSymbolSlow(a, n):
             return [0, False]
     return [product, True]
 
-def cubicResidueSymbol(alpha, pi):
+def jacobiSymbol(a, n):
+    if n == 1:
+        return [1, True]
+    if n % 2 == 0 or n < 0:
+        return [0, False]
+    if math.gcd(a, n) != 1:
+        return [0, True]
+    else:
+        prod = 1
+        if a < 0:
+            a *= -1
+            if n % 4 == 3:
+                prod *= -1
+        while a > 1:
+            a %= n
+            m = (-1 if (n % 8 == 3 or n % 8 == 5) else 1)
+            while not a % 2:
+                a = a // 2
+                prod *= m
+            if a > 2:
+                if (a - 1) * (n - 1) / 4 % 2:
+                    prod *= -1
+                a, n = n, a
+        return [prod, True]
+
+def cubicResidueSymbolSlow(alpha, pi):
     if normEisenstien(pi) == 3:
         return [0, False]
     else:
@@ -91,16 +118,38 @@ def cubicResidueSymbol(alpha, pi):
         out = [omega ** bsgs(quotientModulusPi(omega), inModulus, (0, 2)), True]
         return out
 
-def extendedCubicResidueSymbol(alpha, n):
+def extendedCubicResidueSymbolSlow(alpha, n):
     f = factor(n)
     product = 1
     for i in range(len(f)):
-        p = cubicResidueSymbol(alpha, (f.unit() * f[i][0]) if i == 0 else (f[i][0]))
+        p = cubicResidueSymbolSlow(alpha, (f.unit() * f[i][0]) if i == 0 else (f[i][0]))
         if p[1]:
             product *= p[0] ** f[i][1]
         else:
             return [0, False]
     return [product, True]
+
+def extendedCubicResidueSymbol(alpha, beta):
+    [i1, j1, gamma] = makePrimary(alpha)
+    [i2, j2, delta] = makePrimary(beta)
+    if j2:
+        return [0, False]
+    m, n = (delta[0] - 1) // 3, delta[1] // 3
+    t = (m * j1 - (m + n) * i1) % 3
+    alpha = gamma
+    beta = delta
+    if normEisenstien(alpha) < normEisenstien(beta):
+        alpha, beta = beta, alpha
+    while alpha != beta:
+        [i1, j1, gamma] = makePrimary(alpha - beta)
+        m, n = (beta[0] - 1) // 3, beta[1] // 3
+        t += (m * j1 - (m + n) * i1) % 3
+        alpha = gamma
+        if normEisenstien(alpha) < normEisenstien(beta):
+            alpha, beta = beta, alpha
+    if alpha != 1:
+        return [0, True]
+    return [omega ** (t % 3), True]
 
 def svd(m, timer = False):
     bT = time.time()
