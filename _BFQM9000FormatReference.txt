@@ -1,1 +1,0 @@
-square matrix of quadratic residues of all odd integers 1<=N<=100000
