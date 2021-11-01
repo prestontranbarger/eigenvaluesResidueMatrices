@@ -1,11 +1,8 @@
 from base import *
-import math
-
-eisenstienIntegers = EisensteinIntegers(names=('omega',)); (omega,) = eisenstienIntegers._first_ngens(1)
 
 def conditionsCubic(alpha):
     alpha = Integer(alpha[0]) + Integer(alpha[1]) * omega
-    norm = normEisenstien(alpha)
+    norm = normEisenstein(alpha)
     return (1 <= norm) and\
            (norm != 3) and\
            (isPrimary(alpha)) and\
