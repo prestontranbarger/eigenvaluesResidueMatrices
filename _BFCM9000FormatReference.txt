@@ -1,1 +1,0 @@
-square matrix, cubic residue matrix of all primary squarefree eisenstein integers with norm 1<=N<=5000, N!=3
