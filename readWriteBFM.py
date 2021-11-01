@@ -34,13 +34,9 @@ class rwBFM:
         colGuide = lines[-1][1:-2].replace("\'","").split(", ")
         return m, rowGuide, colGuide
 
-        # add row/col dictionaries
-
     def writeBFM(self, matrix, rowGuide, colGuide):
         file = open(self.writePath, 'a')
         file.writelines([str(row)+"\n" for row in matrix])
         file.writelines(str(rowGuide)+"\n")
         file.writelines(str(colGuide)+"\n")
         file.close()
-
-        # add row/col dictionaries
