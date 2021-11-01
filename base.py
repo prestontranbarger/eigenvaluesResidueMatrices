@@ -5,7 +5,14 @@ import matplotlib.pyplot as plt
 
 eisenstienIntegers = EisensteinIntegers(names=('omega',)); (omega,) = eisenstienIntegers._first_ngens(1)
 
-def normEisenstien(alpha):
+def toStringEisenstein(alpha):
+    return "(" + str(Integer(alpha[0])) + ";" + str(Integer(alpha[1])) + ")"
+
+def toEisensteinString(string):
+    oP = string[1:-1].split(";")
+    return int(oP[0] + oP[1] * omega)
+
+def normEisenstein(alpha):
     #computes magnitude squared of an eisenstien integer
     return Integer(alpha[0]) ** 2 - Integer(alpha[0]) * Integer(alpha[1]) + Integer(alpha[1]) ** 2
 
@@ -14,11 +21,24 @@ def factorEisenstein(alpha):
     #input can be list or eisenstien integer
     return factor(Integer(alpha[0]) + Integer(alpha[1]) * omega)
 
-def eisensteinMod(alpha, n):
-    z = alpha / n
+def modEisenstein(alpha, beta):
+    z = alpha / beta
     kappa = round(z[0]) + round(z[1]) * omega
-    rho = alpha - kappa * n
+    rho = alpha - kappa * beta
     return rho
+
+def gcdEisenstein(alpha, beta):
+    [p, q, gamma] = makePrimary(alpha)
+    [r, s, delta] = makePrimary(beta)
+    g = (1 - omega) ** min([q, s])
+    alpha, beta = gamma, delta
+    while alpha != beta:
+        [p, q, gamma] = makePrimary(alpha - beta)
+        if normEisenstien(alpha) > normEisenstien(beta):
+            alpha = gamma
+        else:
+            beta = gamma
+    return g * alpha
 
 def isPrime(f):
     #uses a given factorization to determine if a number is prime in a specific field
@@ -36,24 +56,19 @@ def makePrimary(alpha):
     alphaCopy = alpha
     while not (alphaCopy[0] % 3 == 1 and alphaCopy[1] % 3 == 0):
         a, b = Integer(alphaCopy[0]), Integer(alphaCopy[1])
-        if (a + b) % 3:
-            if a % 3 == 0:
-                i += (4 if b % 3 == 1 else 1)
-            elif a % 3 == 2:
-                i += (3 if b % 3 == 0 else 2)
+        am, bm = 1 * (a % 3), 1 * (b % 3)
+        if (am + bm) % 3:
+            i += (4 * bm + (am + bm == 2) * (4 * bm - 3)) % 6
+        else:
+            if am:
+                i += (3 + am + (6 - 2 * am) * (a // 3 + b // 3)) % 6
+                j += 1
             else:
                 i += 5
-        else:
-            if a % 3 == 0:
-                i, j = i + 5, j + 2
-            elif a % 3 == 1:
-                m, n = (a - 1) // 3, (b - 2) // 3
-                i, j = i + (4 + 4 * (m + n)) % 6, j + 1
-            else:
-                m, n = (a - 2) // 3, (b - 1) // 3
-                i, j = i + (5 + 2 * (m + n)) % 6, j + 1
+                j += 2
+        i %= 6
         alphaCopy = alpha / ((-1 * omega) ** i * (1 - omega) ** j)
-    return [i % 6, j, alphaCopy]
+    return [i, j, alphaCopy]
 
 def isNthPowerFree(f, n):
     #pass n=2 to find squarefree, n=3 to find cubefree, etc
@@ -108,48 +123,65 @@ def jacobiSymbol(a, n):
         return [prod, True]
 
 def cubicResidueSymbolSlow(alpha, pi):
-    if normEisenstien(pi) == 3:
-        return [0, False]
+    if normEisenstein(pi) == 3:
+        return [Integer(0) + Integer(0) * omega, False]
     else:
         quotientModulusPi = eisenstienIntegers.quotient(eisenstienIntegers.ideal(pi), 'p')
-        inModulus = quotientModulusPi(alpha ** Integer((normEisenstien(pi) - 1) / 3))
+        inModulus = quotientModulusPi(alpha ** Integer((normEisenstein(pi) - 1) / 3))
         if inModulus == 0:
-            return [0, True]
+            return [Integer(0) + Integer(0) * omega, True]
         out = [omega ** bsgs(quotientModulusPi(omega), inModulus, (0, 2)), True]
         return out
 
-def extendedCubicResidueSymbolSlow(alpha, n):
-    f = factor(n)
+def extendedCubicResidueSymbolSlow(alpha, beta):
+    f = factor(beta)
     product = 1
     for i in range(len(f)):
         p = cubicResidueSymbolSlow(alpha, (f.unit() * f[i][0]) if i == 0 else (f[i][0]))
         if p[1]:
             product *= p[0] ** f[i][1]
         else:
-            return [0, False]
+            return [Integer(0) + Integer(0) * omega, False]
     return [product, True]
 
-def extendedCubicResidueSymbol(alpha, beta):
+def extendedCubicResidueSymbolSlowish(alpha, beta):
     [i1, j1, gamma] = makePrimary(alpha)
     [i2, j2, delta] = makePrimary(beta)
     if j2:
-        return [0, False]
+        return [Integer(0) + Integer(0) * omega, False]
     m, n = (delta[0] - 1) // 3, delta[1] // 3
     t = (m * j1 - (m + n) * i1) % 3
     alpha = gamma
     beta = delta
-    if normEisenstien(alpha) < normEisenstien(beta):
+    if normEisenstein(alpha) < normEisenstein(beta):
         alpha, beta = beta, alpha
     while alpha != beta:
         [i1, j1, gamma] = makePrimary(alpha - beta)
         m, n = (beta[0] - 1) // 3, beta[1] // 3
         t += (m * j1 - (m + n) * i1) % 3
         alpha = gamma
-        if normEisenstien(alpha) < normEisenstien(beta):
+        if normEisenstein(alpha) < normEisenstein(beta):
             alpha, beta = beta, alpha
     if alpha != 1:
-        return [0, True]
+        return [Integer(0) + Integer(0) * omega, True]
     return [omega ** (t % 3), True]
+
+def extendedCubicResidueSymbol(alpha, beta):
+    units = [-1, 1, omega, -1 * omega, -1 * omega ** 2, omega ** 2]
+    exp = 0
+    while alpha != -1 and not (beta in units):
+        if not alpha:
+            return [Integer(0) + Integer(0) * omega, True]
+        [p, q, gamma] = makePrimary(alpha)
+        [r, s, delta] = makePrimary(beta)
+        if s:
+            return [Integer(0) + Integer(0) * omega, False]
+        exp += ((p - q) * (1 - delta[0]) - p * delta[1]) // 3
+        alpha, beta = gamma, delta
+        if normEisenstein(alpha) < normEisenstein(beta):
+            alpha, beta = beta, alpha
+        alpha, beta = modEisenstein(alpha, beta), beta
+    return [omega ** (exp % 3), True]
 
 def svd(m, timer = False):
     bT = time.time()
