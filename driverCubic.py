@@ -7,19 +7,25 @@ imgPath = "C:\\Users\\Preston\\Documents\\TAMU\\Courses\\F21\\MATH 491.201\\outp
 
 RWEvs = rwEvs()
 
-maxNorms = list(range(3, 500))
+maxNorm = 500
+
+maxNorms = list([3]) + list(range(7, maxNorm, 6)) + list(range(4, maxNorm, 24))
+maxNorms.sort()
 evNums = set()
 evsArray = []
 normEvsArray = []
+bT = time.time()
 for maxNorm in maxNorms:
-    vE = computeViableElementsCubic(maxNorm)
+    print(maxNorm)
+    print("Compute elements: ", end = "")
+    vE = computeViableElementsCubic(maxNorm, True)
     if(len(vE) not in evNums):
-        print(maxNorm)
         evNums.add(len(vE))
         RWEvs.setReadPath(evsPath)
         rEvs = RWEvs.readEvs(len(vE))
         if(rEvs == -1):
-            m = constructMatrixCubic(vE)
+            print("Construct matrix: ", end = "")
+            m = constructMatrixCubic(vE, True)
             svdDecomp = svd(m)
             evs = extractEigenvals(svdDecomp, len(vE))
             evsArray.append(evs[0])
@@ -29,7 +35,12 @@ for maxNorm in maxNorms:
             RWEvs.setWritePath(normEvsPath)
             RWEvs.writeEvs(evs[1][:])
         else:
+            print("Eigenvalues found")
             evsArray.append(rEvs)
             RWEvs.setReadPath(normEvsPath)
             normEvsArray.append(RWEvs.readEvs(len(vE)))
+    else:
+        print("No new eigenvalues")
+    print("")
+print(time.time() - bT)
 createPlot(evsArray, normEvsArray, True, 5, imgPath)
