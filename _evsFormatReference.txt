@@ -1,3 +1,0 @@
-3 + all numbers 1 mod 6 + all numbers 4 mod 24:
-3-500
-
