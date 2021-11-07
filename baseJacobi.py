@@ -1,4 +1,5 @@
 from base import *
+from tqdm import tqdm
 
 def conditionsJacobi(x):
     return (1 <= x) and\
@@ -8,7 +9,7 @@ def conditionsJacobi(x):
 def computeViableElementsJacobi(maxNorm, timer = False):
     bT = time.time()
     viableCandidates = []
-    for i in range(maxNorm + 1):
+    for i in tqdm(range(maxNorm + 1)):
         if conditionsJacobi(i):
             viableCandidates.append(i)
     if timer:
@@ -22,3 +23,6 @@ def constructMatrixJacobi(viableElements, timer = False):
     if timer:
         print("time to construct matrix:", str(time.time() - bT) + "s")
     return m
+
+def constructMatrixJacobiFromBFM(m, numRows, numCols):
+    return matrix(RDF, numRows, numCols, lambda x, y: int(m[x][y]))
