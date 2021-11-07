@@ -1,9 +1,7 @@
-from tqdm import tqdm
-
-class rwBFM:
-    def __init__(self, readPath = None ,writePath = None):
+class rwEvs:
+    def __init__(self, readPath = None, writePath = None):
         self.readPath = readPath
-        if ((readPath is not None) and (writePath is None)):
+        if((readPath is not None) and (writePath is None)):
             self.writePath = readPath
         else:
             self.writePath = writePath
@@ -22,35 +20,34 @@ class rwBFM:
         self.writePath = writePath
         return 0
 
-    def readBFMGuide(self):
-        with open(self.readPath) as file:
-            rowGuide = file.readline()[1:-2].replace("\'", "").split(", ")
-            colGuide = file.readline()[1:-2].replace("\'", "").split(", ")
-        return rowGuide, colGuide
-
-    def guideToDict(self, guide):
-        guideDict = {"": -1}
-        for i in range(len(guide)):
-            guideDict[guide[i]] = i
-        return guideDict
-
-    def readBFM(self, rows, cols):
-        m = []
-        with open(self.readPath) as file:
-            i = 0
-            for line in tqdm(file):
-                if (i - 2) in rows:
-                    rowEntries = line[1:-2].replace("\'", "").split(", ")
-                    rowAppend = [rowEntries[col] for col in cols]
-                    m.append(rowAppend)
-                elif (i - 2) > rows[-1]:
-                    break
-                i += 1
-        return m
-
-    def writeBFM(self, matrix, rowGuide, colGuide):
-        file = open(self.writePath, 'a')
-        file.writelines(str(rowGuide)+"\n")
-        file.writelines(str(colGuide)+"\n")
-        file.writelines([str(row)+"\n" for row in tqdm(matrix)])
+    def readEvs(self, n):
+        file = open(self.readPath, 'r')
+        lines = file.readlines()
         file.close()
+
+        i = 0
+        if lines:
+            while int(lines[i].strip()) != n:
+                i += int(lines[i].strip()) + 1
+                if(i >= len(lines)):
+                    return -1
+            return [float(lines[i].strip()) for i in range(i + 1, i + int(lines[i].strip()) + 1)]
+        else:
+            return -1
+
+    def writeEvs(self, evs):
+        temp = self.readPath
+        self.readPath = self.writePath
+        file = open(self.readPath, 'r')
+        lines = file.readlines()
+        file.close()
+        self.readPath = temp
+
+        file = open(self.writePath, 'a')
+        evs.insert(0, len(evs))
+        if(len(lines) != 0):
+            file.writelines(("\n" + str(evs[i])) for i in range(len(evs)))
+        else:
+            file.writelines((("\n" if i != 0 else "") + str(evs[i])) for i in range(len(evs)))
+        file.close()
+        return 0
