@@ -23,14 +23,9 @@ class rwBFM:
         return 0
 
     def readBFMGuide(self):
-        #not optimal for large files
-        file = open(self.readPath, 'r')
-        lines = file.readlines()
-        file.close()
-
-        rowGuide = lines[-2][1:-2].replace("\'","").split(", ")
-        colGuide = lines[-1][1:-2].replace("\'","").split(", ")
-
+        with open(self.readPath) as file:
+            rowGuide = file.readline()[1:-2].replace("\'", "").split(", ")
+            colGuide = file.readline()[1:-2].replace("\'", "").split(", ")
         return rowGuide, colGuide
 
     def guideToDict(self, guide):
@@ -39,26 +34,23 @@ class rwBFM:
             guideDict[guide[i]] = i
         return guideDict
 
-    def readBFM(self, getGuide = False, rows = None, cols = None):
+    def readBFM(self, rows, cols):
         m = []
-        rowGuide = []
-        colGuide = []
         with open(self.readPath) as file:
+            i = 0
             for line in tqdm(file):
-                if not getGuide:
+                if (i - 2) in rows:
                     rowEntries = line[1:-2].replace("\'", "").split(", ")
-                    rowAppend = [rowEntries[col] for col in range(len(rowEntries))]
+                    rowAppend = [rowEntries[col] for col in cols]
                     m.append(rowAppend)
-                rowGuide = colGuide
-                colGuide = line[1:-2].replace("\'", "").split(", ")
-        if getGuide:
-            return rowGuide, colGuide
-        else:
-            return m[:-2], rowGuide, colGuide
+                elif (i - 2) > rows[-1]:
+                    break
+                i += 1
+        return m
 
     def writeBFM(self, matrix, rowGuide, colGuide):
         file = open(self.writePath, 'a')
-        file.writelines([str(row)+"\n" for row in tqdm(matrix)])
         file.writelines(str(rowGuide)+"\n")
         file.writelines(str(colGuide)+"\n")
+        file.writelines([str(row)+"\n" for row in tqdm(matrix)])
         file.close()
