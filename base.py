@@ -10,7 +10,7 @@ def toStringEisenstein(alpha):
 
 def toEisensteinString(string):
     oP = string[1:-1].split(";")
-    return int(oP[0] + oP[1] * omega)
+    return Integer(oP[0]) + Integer(oP[1]) * omega
 
 def normEisenstein(alpha):
     #computes magnitude squared of an eisenstien integer
