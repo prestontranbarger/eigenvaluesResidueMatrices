@@ -5,12 +5,15 @@ bfmPath = "C:\\Users\\Preston\\Documents\\TAMU\\Courses\\F21\\MATH 491.201\\outp
 RWBFM = rwBFM(bfmPath)
 
 maxNorm = 100000
+
+print("Computing viable elements...")
 vE = computeViableElementsJacobi(maxNorm)
 
 m = []
-counter = 0
+
+print("Creating BFM...")
 for a in tqdm(vE):
-    counter += 1
     m.append([jacobiSymbol(a, b)[0] for b in vE])
-    print(str(counter) + "/" + str(len(vE)))
+
+print("Writing BFM...")
 RWBFM.writeBFM(m, vE, vE)
