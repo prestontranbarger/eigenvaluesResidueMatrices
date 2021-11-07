@@ -1,13 +1,19 @@
 from baseCubic import *
 from readWriteEvs import *
+from readWriteBFM import *
 
+bfmPath = "C:\\Users\\Preston\\Documents\\TAMU\\Courses\\F21\\MATH 491.201\\output\\3\\square\\BFCM9000.txt"
 evsPath = "C:\\Users\\Preston\\Documents\\TAMU\\Courses\\F21\\MATH 491.201\\output\\3\\square\\evs.txt"
 normEvsPath = "C:\\Users\\Preston\\Documents\\TAMU\\Courses\\F21\\MATH 491.201\\output\\3\\square\\normEvs.txt"
 imgPath = "C:\\Users\\Preston\\Documents\\TAMU\\Courses\\F21\\MATH 491.201\\output\\3\\square\\image\\"
 
 RWEvs = rwEvs()
 
-maxNorm = 500
+RWBFM = rwBFM(bfmPath)
+rowGuide, colGuide = RWBFM.readBFMGuide()
+rowDict, colDict = RWBFM.guideToDict(rowGuide), RWBFM.guideToDict(colGuide)
+
+maxNorm = 2500
 
 maxNorms = list([3]) + list(range(7, maxNorm, 6)) + list(range(4, maxNorm, 24))
 maxNorms.sort()
@@ -17,15 +23,17 @@ normEvsArray = []
 bT = time.time()
 for maxNorm in maxNorms:
     print(maxNorm)
-    print("Compute elements: ", end = "")
+    #print("Compute elements: ", end = "")
     vE = computeViableElementsCubic(maxNorm, True)
     if(len(vE) not in evNums):
         evNums.add(len(vE))
         RWEvs.setReadPath(evsPath)
         rEvs = RWEvs.readEvs(len(vE))
         if(rEvs == -1):
-            print("Construct matrix: ", end = "")
-            m = constructMatrixCubic(vE, True)
+            #print("Construct matrix: ", end = "")
+            rowSubset = [rowDict[toStringEisenstein(element)] for element in vE]
+            colSubset = rowSubset
+            m = constructMatrixCubicFromBFM(RWBFM.readBFM(rowSubset, colSubset), len(rowSubset), len(colSubset))
             svdDecomp = svd(m)
             evs = extractEigenvals(svdDecomp, len(vE))
             evsArray.append(evs[0])
@@ -41,6 +49,6 @@ for maxNorm in maxNorms:
             normEvsArray.append(RWEvs.readEvs(len(vE)))
     else:
         print("No new eigenvalues")
-    print("")
+    #print("")
 print(time.time() - bT)
 createPlot(evsArray, normEvsArray, True, 5, imgPath)
