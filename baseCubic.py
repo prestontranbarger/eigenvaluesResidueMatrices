@@ -1,4 +1,5 @@
 from base import *
+from tqdm import tqdm
 
 def conditionsCubic(alpha):
     alpha = Integer(alpha[0]) + Integer(alpha[1]) * omega
@@ -12,7 +13,7 @@ def computeViableElementsCubic(maxNorm, timer = False):
     bT = time.time()
     viableElements = []
     indexOffset = math.floor(math.sqrt(4 * maxNorm / 3))
-    for y in range(-indexOffset, indexOffset + 1):
+    for y in tqdm(range(-indexOffset, indexOffset + 1)):
         for x in range(math.ceil((y - math.sqrt(4 * maxNorm - 3 * y ** 2)) / 2),\
                        math.floor((y + math.sqrt(4 * maxNorm - 3 * y ** 2)) / 2) + 1):
             if conditionsCubic((x, y)):
@@ -28,3 +29,6 @@ def constructMatrixCubic(viableElements, timer = False):
     if timer:
         print("time to construct matrix:", str(time.time() - bT) + "s")
     return m
+
+def constructMatrixCubicFromBFM(m, numRows, numCols):
+    return matrix(CDF, numRows, numCols, lambda x, y: toEisensteinString(m[x][y]))
