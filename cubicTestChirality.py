@@ -1,4 +1,3 @@
-import baseCubic
 from base import *
 from baseCubic import *
 from readWriteEValues import *
