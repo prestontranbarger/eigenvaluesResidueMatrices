@@ -12,6 +12,9 @@ def toEisensteinString(string):
     oP = string[1:-1].split(";")
     return Integer(oP[0]) + Integer(oP[1]) * omega
 
+def conjugateEisenstein(alpha):
+    return Integer(alpha[0] - alpha[1]) - Integer(alpha[1]) * omega
+
 def normEisenstein(alpha):
     #computes magnitude squared of an eisenstien integer
     return Integer(alpha[0]) ** 2 - Integer(alpha[0]) * Integer(alpha[1]) + Integer(alpha[1]) ** 2
@@ -34,7 +37,7 @@ def gcdEisenstein(alpha, beta):
     alpha, beta = gamma, delta
     while alpha != beta:
         [p, q, gamma] = makePrimary(alpha - beta)
-        if normEisenstien(alpha) > normEisenstien(beta):
+        if normEisenstein(alpha) > normEisenstein(beta):
             alpha = gamma
         else:
             beta = gamma
@@ -58,10 +61,10 @@ def makePrimary(alpha):
         a, b = Integer(alphaCopy[0]), Integer(alphaCopy[1])
         am, bm = 1 * (a % 3), 1 * (b % 3)
         if (am + bm) % 3:
-            i += (4 * bm + (am + bm == 2) * (4 * bm - 3)) % 6
+            i += (4 * bm + (am + bm == 2) * (4 * bm + 3)) % 6
         else:
             if am:
-                i += (3 + am + (6 - 2 * am) * (a // 3 + b // 3)) % 6
+                i += (3 + am + 4 * am * (a // 3 + b // 3)) % 6
                 j += 1
             else:
                 i += 5
@@ -198,6 +201,13 @@ def extractEigenvals(svdDecomp, dim, timer = False):
     if timer:
         print("time to extract eigenvalues:", str(time.time() - bT) + "s")
     return [evs, normEvs]
+
+def extractEigen(m):
+    eValuesVectors = sorted(m.eigenvectors_right(), key = lambda x: x[0], reverse = True)
+    eValues = [element[0].real() for element in eValuesVectors]
+    normEValues = [(element / eValues[0]) for element in eValues]
+    eVectors = [list(element[1][0]) for element in eValuesVectors]
+    return [eValues, normEValues], eVectors
 
 def createPlot(evs, normEvs, useNormValsX = True, numYTicks = 0, path = "output/", timer = False, colorscheme = "jet"):
     bT = time.time()
