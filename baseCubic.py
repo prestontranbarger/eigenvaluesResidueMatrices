@@ -45,5 +45,9 @@ def constructMatrixCubic(viableElements, timer = False):
         print("time to construct matrix:", str(time.time() - bT) + "s")
     return m
 
-def constructMatrixCubicFromBFM(m, numRows, numCols):
-    return matrix(CDF, numRows, numCols, lambda x, y: toEisensteinString(m[x][y]))
+def constructMatrixCubicFromBFM(m, numRows, numCols, timer = True):
+    bT = time.time()
+    out = matrix(CDF, numRows, numCols, lambda x, y: toEisensteinString(m[x][y]))
+    if timer:
+        print("time to construct matrix:", str(time.time() - bT) + "s")
+    return out
