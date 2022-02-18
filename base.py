@@ -19,7 +19,7 @@ def ehat(z):
 def cexps(p):
     #computes the cubic exponential sum, p is prime and 1 mod 3
     sum = 0
-    for i in range(p):
+    for i in range(1, p + 1):
         sum += e(i ** 3 / p)
     return sum
 

@@ -3,10 +3,10 @@ from baseCubic import *
 from readWriteEValues import *
 from readWriteEVectors import *
 
-eValuesPath = "C:\\Users\\Preston\\Documents\\TAMU\\Courses\\F21\\MATH 491.201\\output\\3\\chiralityTest\\eValues.txt"
-normEValuesPath = "C:\\Users\\Preston\\Documents\\TAMU\\Courses\\F21\\MATH 491.201\\output\\3\\chiralityTest\\normEValues.txt"
-eVectorsPath = "C:\\Users\\Preston\\Documents\\TAMU\\Courses\\F21\\MATH 491.201\\output\\3\\chiralityTest\\eVectors.txt"
-imgPath = "C:\\Users\\Preston\\Documents\\TAMU\\Courses\\F21\\MATH 491.201\\output\\3\\chiralityTest\\image\\"
+eValuesPath = "C:\\Users\\Preston\\Documents\\TAMU\\Courses\\213\\491\\output\\3\\chiralityTest\\eValuesBugTest.txt"
+normEValuesPath = "C:\\Users\\Preston\\Documents\\TAMU\\Courses\\213\\491\\output\\3\\chiralityTest\\normEValuesBugTest.txt"
+eVectorsPath = "C:\\Users\\Preston\\Documents\\TAMU\\Courses\\213\\491\\output\\3\\chiralityTest\\eVectorsBugTest.txt"
+imgPath = "C:\\Users\\Preston\\Documents\\TAMU\\Courses\\213\\491\\output\\3\\chiralityTest\\image\\"
 
 RWEValues = rwEValues()
 RWEVectors = rwEVectors()
@@ -33,27 +33,37 @@ def constructMatrixNonChiral(vE):
                                                                                     vE[y][0],\
                                                                                     vE[y][1]))
 
-maxNorm = 250
+maxNorm = 200
 eValuesArray = []
 normEValuesArray = []
 eValueNums = set()
 bT = time.time()
-for norm in range(2, maxNorm):
+for norm in range(155, maxNorm):
     vE = computeViableElementsMultiplicative(norm)
     if (len(vE) not in eValueNums):
         print(norm)
         eValueNums.add(len(vE))
-        m = constructMatrixNonChiral(vE)
-        A = m.H * m
-        eValuesVectors = extractEigen(A)
-        eValues = eValuesVectors[0]
-        eVectors = eValuesVectors[1]
-        eValuesArray.append(eValues[0])
-        normEValuesArray.append(eValues[1])
-        RWEValues.setWritePath(eValuesPath)
-        RWEValues.writeEValues([str(element) for element in eValues[0][:]])
-        RWEValues.setWritePath(normEValuesPath)
-        RWEValues.writeEValues([str(element) for element in eValues[1][:]])
-        RWEVectors.setWritePath(eVectorsPath)
-        RWEVectors.writeEVectors(eVectors)
-createPlot(eValuesArray, normEValuesArray, True, 5, imgPath)
+        RWEValues.setReadPath(eValuesPath)
+        dict = RWEValues.guideToDict(RWEValues.readEValuesGuide())
+        try:
+            i = dict[str(len(vE))]
+            print("Eigenvalues Found")
+            rEvs = RWEValues.readEValues([i])
+            eValuesArray.append([float(element) for element in rEvs[0]])
+            RWEValues.setReadPath(normEValuesPath)
+            normEValuesArray.append([float(element) for element in RWEValues.readEValues([i])[0]])
+        except:
+            m = constructMatrixNonChiral(vE)
+            A = m.H * m
+            eValuesVectors = extractEigen(A)
+            eValues = eValuesVectors[0]
+            eVectors = eValuesVectors[1]
+            eValuesArray.append(eValues[0])
+            normEValuesArray.append(eValues[1])
+            RWEValues.setWritePath(eValuesPath)
+            RWEValues.writeEValues([str(element) for element in eValues[0][:]])
+            RWEValues.setWritePath(normEValuesPath)
+            RWEValues.writeEValues([str(element) for element in eValues[1][:]])
+            RWEVectors.setWritePath(eVectorsPath)
+            RWEVectors.writeEVectors(eVectors)
+createPlot(eValuesArray, normEValuesArray, False, 5, imgPath, True)

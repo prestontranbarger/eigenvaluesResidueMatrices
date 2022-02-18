@@ -2,10 +2,10 @@ from baseCubic import *
 from readWriteEValues import *
 from readWriteBFM import *
 
-bfmPath = "C:\\Users\\Preston\\Documents\\TAMU\\Courses\\F21\\MATH 491.201\\output\\3\\square\\BFCM9000.txt"
-evsPath = "C:\\Users\\Preston\\Documents\\TAMU\\Courses\\F21\\MATH 491.201\\output\\3\\square\\testEValues.txt"
-normEvsPath = "C:\\Users\\Preston\\Documents\\TAMU\\Courses\\F21\\MATH 491.201\\output\\3\\square\\testNormEValues.txt"
-imgPath = "C:\\Users\\Preston\\Documents\\TAMU\\Courses\\F21\\MATH 491.201\\output\\3\\square\\image\\"
+bfmPath = "C:\\Users\\Preston\\Documents\\TAMU\\Courses\\213\\491\\output\\3\\square\\BFCM9001.txt"
+evsPath = "C:\\Users\\Preston\\Documents\\TAMU\\Courses\\213\\491\\output\\3\\square\\eValuesLarge.txt"
+normEvsPath = "C:\\Users\\Preston\\Documents\\TAMU\\Courses\\213\\491\\output\\3\\square\\normEValuesLarge.txt"
+imgPath = "C:\\Users\\Preston\\Documents\\TAMU\\Courses\\213\\491\\output\\3\\square\\image\\"
 
 RWEValues = rwEValues()
 
@@ -13,18 +13,19 @@ RWBFM = rwBFM(bfmPath)
 rowGuide, colGuide = RWBFM.readBFMGuide()
 rowDict, colDict = RWBFM.guideToDict(rowGuide), RWBFM.guideToDict(colGuide)
 
-maxNorm = 3750
+maxNorm = 10000
 
 maxNorms = list([3]) + list(range(7, maxNorm, 6)) + list(range(4, maxNorm, 24))
 maxNorms.sort()
 eValueNums = set()
 eValuesArray = []
 normEValuesArray = []
+normalizationMethod = 's'
 bT = time.time()
 for maxNorm in maxNorms:
+    print(maxNorm)
     vE = computeViableElementsCubic(maxNorm)
     if(len(vE) not in eValueNums):
-        print(maxNorm)
         eValueNums.add(len(vE))
         RWEValues.setReadPath(evsPath)
         dict = RWEValues.guideToDict(RWEValues.readEValuesGuide())
@@ -39,8 +40,9 @@ for maxNorm in maxNorms:
             rowSubset = [rowDict[toStringEisenstein(element)] for element in vE]
             colSubset = rowSubset
             m = constructMatrixCubicFromBFM(RWBFM.readBFM(rowSubset, colSubset), len(rowSubset), len(colSubset))
-            A = m.H * m
-            eValues = extractEigen(A)[0]
+            #A = m.H * m
+            #eValues = extractEigen(A, normalizationMethod)[0]
+            eValues = extractEigenvals(svd(m, True), len(vE), True)
             eValuesArray.append(eValues[0])
             normEValuesArray.append(eValues[1])
             RWEValues.setWritePath(evsPath)
@@ -48,4 +50,6 @@ for maxNorm in maxNorms:
             RWEValues.setWritePath(normEvsPath)
             RWEValues.writeEValues([str(element) for element in eValues[1][:]])
 print(time.time() - bT)
-createPlot(eValuesArray, normEValuesArray, True, 5, imgPath)
+print(eValuesArray)
+print(normEValuesArray)
+createPlot(eValuesArray, normEValuesArray, False, 5, imgPath)

@@ -4,7 +4,7 @@ from readWriteBFM import *
 bfmPath = "C:\\Users\\Preston\\Documents\\TAMU\\Courses\\213\\491\\output\\3\\square\\BFCM9001.txt"
 RWBFM = rwBFM(bfmPath)
 
-maxNorm = 15000
+maxNorm = 100
 
 print("Computing viable elements...")
 vE = computeViableElementsCubic(maxNorm)

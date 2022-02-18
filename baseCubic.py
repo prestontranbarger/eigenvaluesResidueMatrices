@@ -1,6 +1,15 @@
 from base import *
 from tqdm import tqdm
 
+rollingT = 0
+beginT = 0
+
+def conditionsCubicLargeSieve(alpha):
+    alpha = Integer(alpha[0]) + Integer(alpha[1]) * omega
+    norm = normEisenstein(alpha)
+    return isPrimary(alpha) and\
+           isPrime(factorEisenstein(alpha))
+
 def conditionsCubic(alpha):
     alpha = Integer(alpha[0]) + Integer(alpha[1]) * omega
     norm = normEisenstein(alpha)
@@ -17,6 +26,16 @@ def conditionsPrimeCubic(alpha):
            (isPrimary(alpha)) and\
            (isPrime(factorEisenstein(alpha)))
 
+def computeViableElementsCubicLargeSieve(maxNorm):
+    viableElements = []
+    indexOffset = math.floor(math.sqrt(4 * maxNorm / 3))
+    for y in tqdm(range(-indexOffset, indexOffset + 1)):
+        for x in range(math.ceil((y - math.sqrt(4 * maxNorm - 3 * y ** 2)) / 2),\
+                       math.floor((y + math.sqrt(4 * maxNorm - 3 * y ** 2)) / 2) + 1):
+            if conditionsCubicLargeSieve((x, y)):
+                viableElements.append(Integer(x) + Integer(y) * omega)
+    return viableElements
+
 def computeViableElementsCubic(maxNorm):
     viableElements = []
     indexOffset = math.floor(math.sqrt(4 * maxNorm / 3))
@@ -31,16 +50,28 @@ def computeViablePrimeElementsCubic(maxNorm):
     viableElements = []
     indexOffset = math.floor(math.sqrt(4 * maxNorm / 3))
     for y in tqdm(range(-indexOffset, indexOffset + 1)):
-        for x in range(math.ceil((y - math.sqrt(4 * maxNorm - 3 * y ** 2)) / 2), \
+        for x in range(math.ceil((y - math.sqrt(4 * maxNorm - 3 * y ** 2)) / 2),\
                        math.floor((y + math.sqrt(4 * maxNorm - 3 * y ** 2)) / 2) + 1):
             if conditionsPrimeCubic((x, y)):
                 viableElements.append(Integer(x) + Integer(y) * omega)
     return viableElements
 
-def constructMatrixCubic(viableElements, timer = False):
+def ecrsCounter(alpha, beta, symbol, x, y, veLen):
+    global rollingT, beginT
+    if y == 0:
+        print(str(x) + "/" + str(veLen))
+        currentT = time.time()
+        if rollingT != 0:
+            print(str(currentT - rollingT) + "s")
+            print(str(currentT - beginT) + "s")
+        else:
+            beginT = time.time()
+        rollingT = currentT
+    return symbol(alpha, beta)
+
+def constructMatrixCubic(viableElements, symbol, timer = False):
     bT = time.time()
-    m = matrix(CDF, len(viableElements), len(viableElements), lambda x, y: extendedCubicResidueSymbol(viableElements[x],\
-                                                                                                      viableElements[y])[0])
+    m = matrix(CDF, len(viableElements), len(viableElements), lambda x, y: ecrsCounter(viableElements[x], viableElements[y], symbol, x, y, len(viableElements))[0])
     if timer:
         print("time to construct matrix:", str(time.time() - bT) + "s")
     return m

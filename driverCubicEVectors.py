@@ -2,8 +2,8 @@ from baseCubic import *
 from readWriteEVectors import *
 from readWriteBFM import *
 
-bfmPath = "C:\\Users\\Preston\\Documents\\TAMU\\Courses\\F21\\MATH 491.201\\output\\3\\square\\BFCM9000.txt"
-eVectorsPath = "C:\\Users\\Preston\\Documents\\TAMU\\Courses\\F21\\MATH 491.201\\output\\3\\square\\eVectors.txt"
+bfmPath = "C:\\Users\\Preston\\Documents\\TAMU\\Courses\\213\\491\\output\\3\\square\\BFCM9000.txt"
+eVectorsPath = "C:\\Users\\Preston\\Documents\\TAMU\\Courses\\213\\491\\output\\3\\square\\eVectors.txt"
 
 RWEVectors = rwEVectors()
 

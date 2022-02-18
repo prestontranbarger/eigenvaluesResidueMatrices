@@ -2,10 +2,10 @@ from baseJacobi import *
 from readWriteEValues import *
 from readWriteBFM import *
 
-bfmPath = "C:\\Users\\Preston\\Documents\\TAMU\\Courses\\F21\\MATH 491.201\\output\\2\\square\\BFQM9000.txt"
-eValuesPath = "C:\\Users\\Preston\\Documents\\TAMU\\Courses\\F21\\MATH 491.201\\output\\2\\square\\testEValues.txt"
-normEValuesPath = "C:\\Users\\Preston\\Documents\\TAMU\\Courses\\F21\\MATH 491.201\\output\\2\\square\\testNormEValues.txt"
-imgPath = "C:\\Users\\Preston\\Documents\\TAMU\\Courses\\F21\\MATH 491.201\\output\\2\\square\\image\\"
+bfmPath = "C:\\Users\\Preston\\Documents\\TAMU\\Courses\\213\\491\\output\\2\\square\\BFQM9000.txt"
+eValuesPath = "C:\\Users\\Preston\\Documents\\TAMU\\Courses\\213\\491\\output\\2\\square\\testEValues.txt"
+normEValuesPath = "C:\\Users\\Preston\\Documents\\TAMU\\Courses\\213\\491\\output\\2\\square\\testNormEValues.txt"
+imgPath = "C:\\Users\\Preston\\Documents\\TAMU\\Courses\\213\\491\\output\\2\\square\\image\\"
 
 RWEValues = rwEValues()
 
@@ -13,7 +13,8 @@ RWBFM = rwBFM(bfmPath)
 rowGuide, colGuide = RWBFM.readBFMGuide()
 rowDict, colDict = RWBFM.guideToDict(rowGuide), RWBFM.guideToDict(colGuide)
 
-maxNorms = list(range(1, 10000, 2))
+maxNorms = list(range(1, 100, 2))
+norms = []
 evNums = set()
 evsArray = []
 normEvsArray = []
@@ -22,6 +23,7 @@ for maxNorm in maxNorms:
     vE = computeViableElementsJacobi(maxNorm)
     if(len(vE) not in evNums):
         print(maxNorm)
+        norms.append(maxNorm)
         evNums.add(len(vE))
         RWEValues.setReadPath(eValuesPath)
         dict = RWEValues.guideToDict(RWEValues.readEValuesGuide())
@@ -45,5 +47,5 @@ for maxNorm in maxNorms:
             RWEValues.setWritePath(normEValuesPath)
             RWEValues.writeEValues([str(element) for element in eValues[1][:]])
 print(time.time() - bT)
-createPlot(evsArray, normEvsArray, True, 5, imgPath)
+createPlot(evsArray, normEvsArray, True, 5, imgPath, norms)
 print("Plot complete.")

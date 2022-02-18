@@ -2,11 +2,10 @@ from base import *
 from readWriteEValues import *
 from readWriteEVectors import *
 
-bfmPath = "C:\\Users\\Preston\\Documents\\TAMU\\Courses\\F21\\MATH 491.201\\output\\3\\square\\BFCM9000.txt"
-eValuesPath = "C:\\Users\\Preston\\Documents\\TAMU\\Courses\\F21\\MATH 491.201\\output\\3\\randomTest\\eValues.txt"
-normEValuesPath = "C:\\Users\\Preston\\Documents\\TAMU\\Courses\\F21\\MATH 491.201\\output\\3\\randomTest\\normEValues.txt"
-eVectorsPath = "C:\\Users\\Preston\\Documents\\TAMU\\Courses\\F21\\MATH 491.201\\output\\3\\randomTest\\eVectors.txt"
-imgPath = "C:\\Users\\Preston\\Documents\\TAMU\\Courses\\F21\\MATH 491.201\\output\\3\\randomTest\\image\\"
+eValuesPath = "C:\\Users\\Preston\\Documents\\TAMU\\Courses\\213\\491\\output\\3\\randomTest\\eValues.txt"
+normEValuesPath = "C:\\Users\\Preston\\Documents\\TAMU\\Courses\\213\\491\\output\\3\\randomTest\\normEValues.txt"
+eVectorsPath = "C:\\Users\\Preston\\Documents\\TAMU\\Courses\\213\\491\\output\\3\\randomTest\\eVectors.txt"
+imgPath = "C:\\Users\\Preston\\Documents\\TAMU\\Courses\\213\\491\\output\\3\\randomTest\\image\\"
 
 RWEValues = rwEValues()
 RWEVectors = rwEVectors()
