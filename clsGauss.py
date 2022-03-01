@@ -1,5 +1,5 @@
 from baseCubic import *
-from cubicGaussSum import *
+from tqdm import tqdm
 import matplotlib.pyplot as plt
 
 imgPath = "C:\\Users\\Preston\\Documents\\TAMU\\Courses\\213\\491\\output\\3\\square\\image\\"
@@ -8,8 +8,8 @@ x = []
 y = []
 a = []
 vEs = []
-for norm in range(2, 1000):
-    print(norm)
+for norm in tqdm(range(2, 100)):
+    #print(norm)
     sum = 0 + 0 * omega
     vE = computeViableElementsCubicLargeSieve(norm)
     x.append(norm)
@@ -19,13 +19,12 @@ for norm in range(2, 1000):
         c = 0
         for element in vE:
             sum = sum + normalizedGaussSum(element)
-            c += 1
-            print(str(c) + "/" + str(len(vE)))
-        y.append(eisensteinToComplex(complexToEisenstein(sum)).abs())
+        y.append(simplifyComplex(sum).real())
     else:
         y.append(y[-1])
+print(x)
 print(y)
 print(a)
 plt.plot(x, y, color = 'b')
 plt.plot(x, a, color = 'r')
-plt.savefig(imgPath + str(math.floor(time.time())) + "cls.png")
+plt.savefig(imgPath + str(math.floor(time.time())) + "clsGauss.png")

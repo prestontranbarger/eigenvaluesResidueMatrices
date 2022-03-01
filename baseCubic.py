@@ -7,7 +7,8 @@ beginT = 0
 def conditionsCubicLargeSieve(alpha):
     alpha = Integer(alpha[0]) + Integer(alpha[1]) * omega
     norm = normEisenstein(alpha)
-    return isPrimary(alpha) and\
+    return alpha[1] != 0 and\
+           isPrimary(alpha) and\
            isPrime(factorEisenstein(alpha))
 
 def conditionsCubic(alpha):
