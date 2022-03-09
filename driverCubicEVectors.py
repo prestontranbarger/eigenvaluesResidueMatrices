@@ -2,8 +2,8 @@ from baseCubic import *
 from readWriteEVectors import *
 from readWriteBFM import *
 
-bfmPath = "C:\\Users\\Preston\\Documents\\TAMU\\Courses\\213\\491\\output\\3\\square\\BFCM9000.txt"
-eVectorsPath = "C:\\Users\\Preston\\Documents\\TAMU\\Courses\\213\\491\\output\\3\\square\\eVectors.txt"
+bfmPath = "C:\\Users\\Preston\\Documents\\TAMU\\Courses\\221\\491\\eigenvaluesResidueMatrices\\output\\3\\square\\BFCM9000.txt"
+eVectorsPath = "C:\\Users\\Preston\\Documents\\TAMU\\Courses\\221\\491\\eigenvaluesResidueMatrices\\output\\3\\square\\eVectors.txt"
 
 RWEVectors = rwEVectors()
 
@@ -11,7 +11,7 @@ RWBFM = rwBFM(bfmPath)
 rowGuide, colGuide = RWBFM.readBFMGuide()
 rowDict, colDict = RWBFM.guideToDict(rowGuide), RWBFM.guideToDict(colGuide)
 
-maxNorm = 468
+maxNorm = 1000
 
 maxNorms = list([3]) + list(range(7, maxNorm, 6)) + list(range(4, maxNorm, 24))
 maxNorms.sort()

@@ -82,6 +82,10 @@ def modEisenstein(alpha, beta):
     rho = alpha - kappa * beta
     return rho
 
+def parseComplex(string):
+    z = complex(string.strip().replace(" ", "").replace("*I", "j"))
+    return z.real + z.imag * I
+
 def toStringEisenstein(alpha):
     #converts an eisenstein number to a string for the purposes of the BFM
     return "(" + str(Integer(alpha[0])) + ";" + str(Integer(alpha[1])) + ")"

@@ -2,8 +2,8 @@ from baseJacobi import *
 from readWriteEVectors import *
 from readWriteBFM import *
 
-bfmPath = "C:\\Users\\Preston\\Documents\\TAMU\\Courses\\213\\491\\output\\2\\square\\BFQM9000.txt"
-eVectorsPath = "C:\\Users\\Preston\\Documents\\TAMU\\Courses\\213\\491\\output\\2\\square\\eVectors.txt"
+bfmPath = "C:\\Users\\Preston\\Documents\\TAMU\\Courses\\221\\491\\output\\2\\square\\BFQM9000.txt"
+eVectorsPath = "C:\\Users\\Preston\\Documents\\TAMU\\Courses\\221\\491\\output\\2\\square\\eVectors.txt"
 
 RWEVectors = rwEVectors()
 

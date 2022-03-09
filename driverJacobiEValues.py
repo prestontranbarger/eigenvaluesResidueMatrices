@@ -2,10 +2,10 @@ from baseJacobi import *
 from readWriteEValues import *
 from readWriteBFM import *
 
-bfmPath = "C:\\Users\\Preston\\Documents\\TAMU\\Courses\\213\\491\\output\\2\\square\\BFQM9000.txt"
-eValuesPath = "C:\\Users\\Preston\\Documents\\TAMU\\Courses\\213\\491\\output\\2\\square\\testEValues.txt"
-normEValuesPath = "C:\\Users\\Preston\\Documents\\TAMU\\Courses\\213\\491\\output\\2\\square\\testNormEValues.txt"
-imgPath = "C:\\Users\\Preston\\Documents\\TAMU\\Courses\\213\\491\\output\\2\\square\\image\\"
+bfmPath = "C:\\Users\\Preston\\Documents\\TAMU\\Courses\\221\\491\\output\\2\\square\\BFQM9000.txt"
+eValuesPath = "C:\\Users\\Preston\\Documents\\TAMU\\Courses\\221\\491\\output\\2\\square\\testEValues.txt"
+normEValuesPath = "C:\\Users\\Preston\\Documents\\TAMU\\Courses\\221\\491\\output\\2\\square\\testNormEValues.txt"
+imgPath = "C:\\Users\\Preston\\Documents\\TAMU\\Courses\\221\\491\\output\\2\\square\\image\\"
 
 RWEValues = rwEValues()
 

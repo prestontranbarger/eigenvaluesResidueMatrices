@@ -2,7 +2,7 @@ from baseCubic import *
 from tqdm import tqdm
 import matplotlib.pyplot as plt
 
-imgPath = "C:\\Users\\Preston\\Documents\\TAMU\\Courses\\213\\491\\output\\3\\square\\image\\"
+imgPath = "C:\\Users\\Preston\\Documents\\TAMU\\Courses\\221\\491\\output\\3\\square\\image\\"
 
 xS = []
 yS = []

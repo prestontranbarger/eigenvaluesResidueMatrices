@@ -5,8 +5,8 @@ from readWriteEValues import *
 import matplotlib.pyplot as plt
 import statistics
 
-evsPath = "C:\\Users\\Preston\\Documents\\TAMU\\Courses\\213\\491\\output\\3\\square\\eValuesLarge.txt"
-imgPath = "C:\\Users\\Preston\\Documents\\TAMU\\Courses\\213\\491\\output\\3\\square\\image\\"
+evsPath = "C:\\Users\\Preston\\Documents\\TAMU\\Courses\\221\\491\\output\\3\\square\\eValuesLarge.txt"
+imgPath = "C:\\Users\\Preston\\Documents\\TAMU\\Courses\\221\\491\\output\\3\\square\\image\\"
 
 RWEValues = rwEValues()
 

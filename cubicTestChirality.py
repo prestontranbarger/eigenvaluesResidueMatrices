@@ -3,10 +3,10 @@ from baseCubic import *
 from readWriteEValues import *
 from readWriteEVectors import *
 
-eValuesPath = "C:\\Users\\Preston\\Documents\\TAMU\\Courses\\213\\491\\output\\3\\chiralityTest\\eValuesBugTest.txt"
-normEValuesPath = "C:\\Users\\Preston\\Documents\\TAMU\\Courses\\213\\491\\output\\3\\chiralityTest\\normEValuesBugTest.txt"
-eVectorsPath = "C:\\Users\\Preston\\Documents\\TAMU\\Courses\\213\\491\\output\\3\\chiralityTest\\eVectorsBugTest.txt"
-imgPath = "C:\\Users\\Preston\\Documents\\TAMU\\Courses\\213\\491\\output\\3\\chiralityTest\\image\\"
+eValuesPath = "C:\\Users\\Preston\\Documents\\TAMU\\Courses\\221\\491\\output\\3\\chiralityTest\\eValuesBugTest.txt"
+normEValuesPath = "C:\\Users\\Preston\\Documents\\TAMU\\Courses\\221\\491\\output\\3\\chiralityTest\\normEValuesBugTest.txt"
+eVectorsPath = "C:\\Users\\Preston\\Documents\\TAMU\\Courses\\221\\491\\output\\3\\chiralityTest\\eVectorsBugTest.txt"
+imgPath = "C:\\Users\\Preston\\Documents\\TAMU\\Courses\\221\\491\\output\\3\\chiralityTest\\image\\"
 
 RWEValues = rwEValues()
 RWEVectors = rwEVectors()

@@ -1,10 +1,10 @@
 from baseCubic import *
 from readWriteBFM import *
 
-bfmPath = "C:\\Users\\Preston\\Documents\\TAMU\\Courses\\213\\491\\output\\3\\square\\BFCM9001.txt"
+bfmPath = "C:\\Users\\Preston\\Documents\\TAMU\\Courses\\221\\491\\output\\3\\square\\BFCM9001.txt"
 RWBFM = rwBFM(bfmPath)
 
-maxNorm = 100
+maxNorm = 1000
 
 print("Computing viable elements...")
 vE = computeViableElementsCubic(maxNorm)

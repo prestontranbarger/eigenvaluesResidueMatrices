@@ -2,10 +2,10 @@ from baseChirality import *
 from readWriteEValues import *
 from readWriteBFM import *
 
-bfmPath = "C:\\Users\\Preston\\Documents\\TAMU\\Courses\\213\\491\\output\\3\\chiralityTest\\BFCM9000.txt"
-evsPath = "C:\\Users\\Preston\\Documents\\TAMU\\Courses\\213\\491\\output\\3\\chiralityTest\\logEValues.txt"
-normEvsPath = "C:\\Users\\Preston\\Documents\\TAMU\\Courses\\213\\491\\output\\3\\chiralityTest\\logNormEValues.txt"
-imgPath = "C:\\Users\\Preston\\Documents\\TAMU\\Courses\\213\\491\\output\\3\\chiralityTest\\image\\"
+bfmPath = "C:\\Users\\Preston\\Documents\\TAMU\\Courses\\221\\491\\output\\3\\chiralityTest\\BFCM9000.txt"
+evsPath = "C:\\Users\\Preston\\Documents\\TAMU\\Courses\\221\\491\\output\\3\\chiralityTest\\logEValues.txt"
+normEvsPath = "C:\\Users\\Preston\\Documents\\TAMU\\Courses\\221\\491\\output\\3\\chiralityTest\\logNormEValues.txt"
+imgPath = "C:\\Users\\Preston\\Documents\\TAMU\\Courses\\221\\491\\output\\3\\chiralityTest\\image\\"
 
 RWEValues = rwEValues()
 

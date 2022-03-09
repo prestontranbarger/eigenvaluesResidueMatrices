@@ -1,7 +1,7 @@
 from baseChirality import *
 from readWriteBFM import *
 
-bfmPath = "C:\\Users\\Preston\\Documents\\TAMU\\Courses\\213\\491\\output\\3\\chiralityTest\\BFCM9000.txt"
+bfmPath = "C:\\Users\\Preston\\Documents\\TAMU\\Courses\\221\\491\\output\\3\\chiralityTest\\BFCM9000.txt"
 RWBFM = rwBFM(bfmPath)
 
 maxNorm = 500
