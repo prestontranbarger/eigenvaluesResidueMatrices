@@ -47,7 +47,16 @@ def gaussSum(c):
 
 def normalizedGaussSum(c):
     #computes the normalized gauss sum on the complex unit circle
-    return gaussSum(c) / math.sqrt(normEisenstein(c))
+    return gaussSum(c) / absEisenstein(c)
+
+def gaussMuSum(mu, c):
+    sum = 0
+    for i in range(normEisenstein(c)):
+        sum += extendedCubicResidueSymbol(omega * i, c)[0] * ehat(mu * omega * i / c)
+    return sum
+
+def normalizedGaussMuSum(mu, c):
+    return gaussMuSum(mu, c) / absEisenstein(c)
 
 def eisensteinToComplex(alpha):
     #converts an eisenstein number to imaginary
@@ -64,6 +73,9 @@ def simplifyComplex(z):
 def conjugateEisenstein(alpha):
     #computes the complex conjugate of an eisenstein number
     return Integer(alpha[0] - alpha[1]) - Integer(alpha[1]) * omega
+
+def absEisenstein(alpha):
+    return math.sqrt(normEisenstein(alpha))
 
 def normEisenstein(alpha):
     #computes magnitude squared of an eisenstien integer

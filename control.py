@@ -6,30 +6,30 @@ imgPath = "C:\\Users\\Preston\\Documents\\TAMU\\Courses\\221\\491\\eigenvaluesRe
 
 def genRandComplexUnitVec(dim):
     v = []
-    s = 1
-    for i in range(dim - 1):
-        D = RealDistribution('uniform', [-math.sqrt(s), math.sqrt(s)])
+    D = RealDistribution('uniform', [-1, 1])
+    m = 0
+    for i in range(dim):
         a = D.get_random_element()
-        s -= a ** 2
-        D = RealDistribution('uniform', [-math.sqrt(s), math.sqrt(s)])
         b = D.get_random_element()
-        s -= b ** 2
         v.append(a + b * I)
-    D = RealDistribution('uniform', [-math.sqrt(s), math.sqrt(s)])
-    a = D.get_random_element()
-    b = math.copysign(1, random.random() - 0.5) * sqrt(s - a ** 2)
-    v.append(a + b * I)
+        m += a ** 2 + b ** 2
+    for i in range(len(v)):
+        v[i] = v[i] / m
     return v
 
 x = []
 y = []
+c = []
 trials = 2500
-for dim in range(100, 101):
+for dim in range(1, 10):
+    print(dim)
     s = 0
     for i in tqdm(range(trials)):
         s += vector(genRandComplexUnitVec(dim)).hermitian_inner_product(vector(genRandComplexUnitVec(dim))).abs()
     print(s / trials)
     x.append(dim)
     y.append(s / trials)
+    c.append((s / trials) / (1 / sqrt(dim)))
 plt.plot(x, y)
+plt.plot(x, c)
 plt.savefig(imgPath + str(math.floor(time.time())) + "control.png")
