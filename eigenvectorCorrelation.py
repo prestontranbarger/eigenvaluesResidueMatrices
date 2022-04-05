@@ -12,20 +12,23 @@ def tradEgnvecFunction(element):
 def muEgnvecFuction(egnNum, element):
     return conjugate(simplifyComplex(normalizedGaussMuSum(egnNum, element)))
 
-def twistedEigvecFunction(egnNum, element):
+def twistedEgnvecFunction(egnNum, element):
     return simplifyComplex(eisensteinToComplex(extendedCubicResidueSymbol(0 * omega + egnNum, element)) * conjugate(normalizedGaussMuSum(1, element)))
+
+def twistedMuEgnvecFunction(egnNum, element):
+    return simplifyComplex(eisensteinToComplex(extendedCubicResidueSymbol(0 * omega + egnNum, element)) * conjugate(normalizedGaussMuSum(egnNum, element)))
 
 RWEVectors = rwEVectors()
 
-egnNum = 2
+egnNum = 7
 min = 4
-max = 100
+max = 125
+
 x = []
 y = []
-vEs = []
-tally = []
-
+vEs = [0]
 tally = [0 for i in range(len(computeViableElementsCubic(min)))]
+
 for n in range(min, max):
     #print(n)
     v = []
@@ -33,7 +36,8 @@ for n in range(min, max):
     vE = computeViableElementsCubic(n)
     #x.append(n)
     if len(vE) not in vEs:
-        tally.append(0)
+        for i in range(len(vE) - vEs[-1]):
+            tally.append(0)
         for element in tqdm(vE):
             ngs = muEgnvecFuction(egnNum, element)
             v.append(ngs)
@@ -45,11 +49,13 @@ for n in range(min, max):
         rowDict = RWEVectors.guideToDict(RWEVectors.readEVectorsGuide())
         egnVec = [[parseComplex(z) for z in eV] for eV in RWEVectors.readEVectors([rowDict[str(len(vE))]])]
         cs = []
+        csm = []
         MIndx = 0
         MAbs = 0
         for eVi in range(len(egnVec)):
             ci = (vector(v).hermitian_inner_product(vector(egnVec[eVi]))) / (vector(egnVec[eVi]).hermitian_inner_product(vector(egnVec[eVi])))
             cs.append(ci)
+            csm.append(ci.abs())
             if ci.abs() > MAbs:
                 MAbs = ci.abs()
                 MIndx = eVi
@@ -57,14 +63,14 @@ for n in range(min, max):
         try:
             row = egnVec[egnNum - 1]
             mag = vector(v).hermitian_inner_product(vector(row)).abs()
-            tally[MIndx] += 1
         except:
             mag = 0
+        tally[MIndx] += 1
         x.append(len(vE))
         y.append(mag)
         print("\n")
         print(n, len(vE), mag)
-        print(MIndx + 1, cs)
+        print(MIndx + 1, csm, cs)
     #else:
     #    y.append(y[-1])
     vEs.append(len(vE))
