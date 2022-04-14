@@ -335,19 +335,20 @@ def createPlot(evs, normEvs, useNormValsX = True, numYTicks = 0, path = "output/
                     y.append(i)
             else:
                 y.append(trueY[i])
+    plt.rcParams['text.usetex'] = True
     if useNormValsX == 's':
         plt.scatter(oneDimNormEvs, y, s = 10, c = oneDimNormEvs, cmap = colorscheme, vmin = 0)
-        plt.xlabel("Normalized Eigenvalues")
+        plt.xlabel(latex("Normalized Eigenvalues"))
     elif useNormValsX == 'l':
         plt.scatter(oneDimNormEvs, y, s = 10, c = oneDimNormEvs, cmap = colorscheme, vmin = 0)
-        plt.xlabel("Log Normalized Eigenvalues")
+        plt.xlabel(latex("Log Normalized Eigenvalues"))
     else:
         plt.scatter(oneDimEvs, y, s = 10, c = oneDimNormEvs, cmap = colorscheme, vmin = 0)
-        plt.xlabel("Eigenvalues")
+        plt.xlabel(latex("Eigenvalues"))
     if type(trueY) == bool:
-        plt.ylabel("Number of Eigenvalues")
+        plt.ylabel(latex("Number of Eigenvalues"))
     else:
-        plt.ylabel("Norm Value")
+        plt.ylabel(latex("Norm Value"))
     if numYTicks > len(yTicks):
         return -1
     elif numYTicks == -1:
@@ -359,6 +360,8 @@ def createPlot(evs, normEvs, useNormValsX = True, numYTicks = 0, path = "output/
     else:
         plt.yticks([yTicks[int(round(i * (len(yTicks) - 1) / (numYTicks - 1)))] for i in range(numYTicks)],\
                    [yTicksLabels[int(round(i * (len(yTicksLabels) - 1) / (numYTicks - 1)))] for i in range(numYTicks)])
+    plt.colorbar()
+    plt.clim(0, 1)
     plt.savefig(path + str(math.floor(time.time())) + "ev.png")
     if timer:
         print("time to create plot:", str(time.time() - bT) + "s")
@@ -392,3 +395,47 @@ def cumPlot(evsFilePath, lines, maxEv, path = "output/"):
     plt.locator_params(nbins = 5)
     plt.savefig(path + str(math.floor(time.time())) + "cum.png")
     return 0
+
+def correlationPlot(matSizes, csms, path = "output/", colorscheme = "jet"):
+    xs = []
+    ys = []
+    cs = []
+    for i in range(len(matSizes)):
+        for j in range(matSizes[i]):
+            xs.append(j + 1)
+            ys.append(matSizes[i])
+            cs.append(csms[i][j])
+    plt.scatter(xs, ys, s = 10, c = cs, cmap = colorscheme)
+    plt.colorbar()
+    plt.clim(0, 1)
+    plt.savefig(path + str(math.floor(time.time())) + "correl.png")
+
+def correlationPlotPColorMesh(matSizes, csms, path = "output/", plotTitle = "", colorscheme = "jet"):
+    ycm = []
+    cms = []
+    for ms in matSizes:
+        ycm.append(ms)
+        ycm.append(ms + 1)
+    ycm = list(set(ycm))
+    ycm.sort()
+    xcm = [[i for i in range(1, matSizes[-1] + 2)] for j in range(len(ycm))]
+    for i in range(len(ycm)):
+        ycm[i] = [ycm[i] for j in range(len(xcm[i]))]
+    for i in range(len(xcm) - 1):
+        row = []
+        for j in range(len(xcm[i]) - 1):
+            if ycm[i][j] in matSizes:
+                if ycm[i][j] > j:
+                    row.append(float(csms[matSizes.index(ycm[i][j])][j]))
+                else:
+                    row.append(float(0.0))
+            else:
+                row.append(float(0.0))
+        cms.append(row)
+    print(cms)
+    plt.clf()
+    plt.pcolormesh(xcm, ycm, cms, cmap = colorscheme)
+    plt.colorbar()
+    plt.clim(0, 1)
+    plt.title(plotTitle)
+    plt.savefig(path + str(math.floor(time.time())) + "correl" + plotTitle + ".png")
