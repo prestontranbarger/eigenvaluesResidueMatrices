@@ -6,6 +6,7 @@ bfmPath = "C:\\Users\\Preston\\Documents\\TAMU\\Courses\\221\\491\\eigenvaluesRe
 evsPath = "C:\\Users\\Preston\\Documents\\TAMU\\Courses\\221\\491\\eigenvaluesResidueMatrices\\output\\3\\square\\eValuesLarge.txt"
 normEvsPath = "C:\\Users\\Preston\\Documents\\TAMU\\Courses\\221\\491\\eigenvaluesResidueMatrices\\output\\3\\square\\normEValuesLarge.txt"
 imgPath = "C:\\Users\\Preston\\Documents\\TAMU\\Courses\\221\\491\\eigenvaluesResidueMatrices\\output\\3\\square\\image\\"
+tempOutPath = "C:\\Users\\Preston\\Documents\\TAMU\\Courses\\221\\491\\eigenvaluesResidueMatrices\\output\\tempOut\\tempOut.txt"
 
 RWEValues = rwEValues()
 
@@ -13,7 +14,7 @@ RWBFM = rwBFM(bfmPath)
 rowGuide, colGuide = RWBFM.readBFMGuide()
 rowDict, colDict = RWBFM.guideToDict(rowGuide), RWBFM.guideToDict(colGuide)
 
-maxNorm = 100
+maxNorm = 500
 
 maxNorms = list([3]) + list(range(7, maxNorm, 6)) + list(range(4, maxNorm, 24))
 maxNorms.sort()
@@ -50,6 +51,10 @@ for maxNorm in maxNorms:
             RWEValues.setWritePath(normEvsPath)
             RWEValues.writeEValues([str(element) for element in eValues[1][:]])
 print(time.time() - bT)
-print(eValuesArray)
-print(normEValuesArray)
+
+file = open(tempOutPath, 'w')
+file.writelines(str(eValuesArray) + "\n")
+file.writelines(str(normEValuesArray) + "\n")
+file.close()
+
 createPlot(eValuesArray, normEValuesArray, False, 5, imgPath)

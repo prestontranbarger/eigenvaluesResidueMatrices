@@ -1,7 +1,7 @@
+import os
 from sage.all import *
 import math
 import time
-import matplotlib
 import matplotlib.pyplot as plt
 from readWriteEValues import *
 
@@ -133,7 +133,21 @@ def isPrimary(alpha):
         return True
     return False
 
-def makePrimary(alpha):
+def makePrimarySlow(alpha):
+    # every number in Z[omega], alpha, can be expressed in the following form:
+    # alpha=(-omega)^i*(1-omega)^j*beta where beta is primary, this method computes
+    # the values of i, j, and beta
+    i = 0
+    j = 0
+    while modEisenstein(alpha, (1 - omega) ** j) == 0:
+        j += 1
+    alpha /= (1 - omega) ** (j - 1)
+    while modEisenstein(modEisenstein(alpha, (1 - omega) ** (j + 1)), 3) != (-1 * omega) ** i:
+        i += 1
+    alpha /= (-1 * omega) ** i
+    return [i, j - 1, alpha]
+
+def makePrimaryOld(alpha):
     #every number in Z[omega], alpha, can be expressed in the following form:
     #alpha=(-omega)^i*(1-omega)^j*beta where beta is primary, this method computes
     #the values of i, j, and beta
@@ -154,6 +168,24 @@ def makePrimary(alpha):
         i %= 6
         alphaCopy = alpha / ((-1 * omega) ** i * (1 - omega) ** j)
     return [i, j, alphaCopy]
+
+def makePrimary(alpha):
+    i, j = 0, 0
+    alphaCopy = alpha
+    while not (alphaCopy[0] % 3 == 1 and alphaCopy[1] % 3 == 0):
+        a, b = Integer(alphaCopy[0]), Integer(alphaCopy[1])
+        am, bm = 1 * (a % 3), 1 * (b % 3)
+        if (am + bm) % 3:
+            i += (4 * bm + (am + bm == 2) * (4 * bm + 3)) % 6
+            alphaCopy *= (-1 * omega ** 2) ** i
+        else:
+            j += 1
+            alphaCopy = ((2 * a - b) // 3) + ((a + b) // 3) * omega
+        i %= 6
+    return [i, j, alphaCopy]
+
+def negOmegaToZeta(p):
+    return (-1 * p) % 6
 
 def isNthPowerFree(f, n):
     #given a factorization f, we check if it is squarefree (n = 2), cubefree (n = 3), etc.
@@ -335,20 +367,20 @@ def createPlot(evs, normEvs, useNormValsX = True, numYTicks = 0, path = "output/
                     y.append(i)
             else:
                 y.append(trueY[i])
-    plt.rcParams['text.usetex'] = True
+    plt.title("Eigenvalue Growth")
     if useNormValsX == 's':
         plt.scatter(oneDimNormEvs, y, s = 10, c = oneDimNormEvs, cmap = colorscheme, vmin = 0)
-        plt.xlabel(latex("Normalized Eigenvalues"))
+        plt.xlabel("Normalized Eigenvalues")
     elif useNormValsX == 'l':
         plt.scatter(oneDimNormEvs, y, s = 10, c = oneDimNormEvs, cmap = colorscheme, vmin = 0)
-        plt.xlabel(latex("Log Normalized Eigenvalues"))
+        plt.xlabel("Log Normalized Eigenvalues")
     else:
         plt.scatter(oneDimEvs, y, s = 10, c = oneDimNormEvs, cmap = colorscheme, vmin = 0)
-        plt.xlabel(latex("Eigenvalues"))
+        plt.xlabel("Eigenvalues")
     if type(trueY) == bool:
-        plt.ylabel(latex("Number of Eigenvalues"))
+        plt.ylabel("Number of Eigenvalues")
     else:
-        plt.ylabel(latex("Norm Value"))
+        plt.ylabel("Norm Value")
     if numYTicks > len(yTicks):
         return -1
     elif numYTicks == -1:
@@ -360,8 +392,10 @@ def createPlot(evs, normEvs, useNormValsX = True, numYTicks = 0, path = "output/
     else:
         plt.yticks([yTicks[int(round(i * (len(yTicks) - 1) / (numYTicks - 1)))] for i in range(numYTicks)],\
                    [yTicksLabels[int(round(i * (len(yTicksLabels) - 1) / (numYTicks - 1)))] for i in range(numYTicks)])
-    plt.colorbar()
     plt.clim(0, 1)
+    cb = plt.colorbar()
+    cb.ax.get_yaxis().labelpad = 20
+    cb.ax.set_ylabel("Fraction of Largest Eigenvalue", rotation = 270)
     plt.savefig(path + str(math.floor(time.time())) + "ev.png")
     if timer:
         print("time to create plot:", str(time.time() - bT) + "s")
@@ -406,8 +440,8 @@ def correlationPlot(matSizes, csms, path = "output/", colorscheme = "jet"):
             ys.append(matSizes[i])
             cs.append(csms[i][j])
     plt.scatter(xs, ys, s = 10, c = cs, cmap = colorscheme)
-    plt.colorbar()
     plt.clim(0, 1)
+    plt.colorbar()
     plt.savefig(path + str(math.floor(time.time())) + "correl.png")
 
 def correlationPlotPColorMesh(matSizes, csms, path = "output/", plotTitle = "", colorscheme = "jet"):
@@ -432,10 +466,9 @@ def correlationPlotPColorMesh(matSizes, csms, path = "output/", plotTitle = "", 
             else:
                 row.append(float(0.0))
         cms.append(row)
-    print(cms)
     plt.clf()
     plt.pcolormesh(xcm, ycm, cms, cmap = colorscheme)
-    plt.colorbar()
     plt.clim(0, 1)
+    plt.colorbar()
     plt.title(plotTitle)
-    plt.savefig(path + str(math.floor(time.time())) + "correl" + plotTitle + ".png")
+    plt.savefig(path + str(math.floor(time.time())) + "correl.png")
